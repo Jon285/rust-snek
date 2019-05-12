@@ -1,84 +1,13 @@
-extern crate glutin_window;
-extern crate graphics;
-extern crate opengl_graphics;
-extern crate piston;
+use snek::{Direction, Game, Snek};
+
+use std::collections::VecDeque;
+use std::iter::FromIterator;
 
 use glutin_window::GlutinWindow;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::*;
 use piston::input::*;
 use piston::window::WindowSettings;
-
-#[derive(Clone, PartialEq)]
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-struct Snek {
-    x: f32,
-    y: f32,
-    dir: Direction,
-}
-
-impl Snek {
-    fn render(&self, gl: &mut GlGraphics, args: &RenderArgs) {
-        let red: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
-
-        let square =
-            graphics::rectangle::square((self.x * 20.0) as f64, (self.y * 20.0) as f64, 20_f64);
-
-        gl.draw(args.viewport(), |c, gl| {
-            let transform = c.transform;
-
-            graphics::rectangle(red, square, transform, gl);
-        });
-    }
-
-    fn update(&mut self) {
-        match self.dir {
-            Direction::Up => self.y -= 1.0,
-            Direction::Down => self.y += 1.0,
-            Direction::Left => self.x -= 1.0,
-            Direction::Right => self.x += 1.0,
-        }
-    }
-}
-
-struct Game {
-    gl: GlGraphics,
-    snek: Snek,
-}
-
-impl Game {
-    fn render(&mut self, arg: &RenderArgs) {
-        let black: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
-
-        self.gl.draw(arg.viewport(), |_c, gl| {
-            graphics::clear(black, gl);
-        });
-
-        self.snek.render(&mut self.gl, arg);
-    }
-
-    fn update(&mut self) {
-        self.snek.update();
-    }
-
-    fn pressed(&mut self, btn: &Button) {
-        let last = self.snek.dir.clone();
-
-        self.snek.dir = match btn {
-            &Button::Keyboard(Key::Up) if last != Direction::Down => Direction::Up,
-            &Button::Keyboard(Key::Down) if last != Direction::Up => Direction::Down,
-            &Button::Keyboard(Key::Left) if last != Direction::Right => Direction::Left,
-            &Button::Keyboard(Key::Right) if last != Direction::Left => Direction::Right,
-            _ => last,
-        };
-    }
-}
 
 fn main() {
     let opengl = OpenGL::V3_2;
@@ -92,8 +21,7 @@ fn main() {
     let mut game = Game {
         gl: GlGraphics::new(opengl),
         snek: Snek {
-            x: 0.0,
-            y: 0.0,
+            body: VecDeque::from_iter((vec![(0.0, 0.0), (0.0, 1.0)]).into_iter()),
             dir: Direction::Right,
         },
     };

@@ -12,7 +12,7 @@ use piston::window::WindowSettings;
 fn main() {
     let opengl = OpenGL::V3_2;
 
-    let mut window: GlutinWindow = WindowSettings::new("snek", [600, 600])
+    let mut window: GlutinWindow = WindowSettings::new("snek", [400, 400])
         .opengl(opengl)
         .exit_on_esc(true)
         .build()

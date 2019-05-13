@@ -43,12 +43,37 @@ impl Snek {
 
     pub fn update(&mut self) {
         let mut new_head = (*self.body.front().expect("Snek has no body :(")).clone();
+        let head = self.body.front().unwrap();
 
         match self.dir {
-            Direction::Up => new_head.1 -= 1.0,
-            Direction::Down => new_head.1 += 1.0,
-            Direction::Left => new_head.0 -= 1.0,
-            Direction::Right => new_head.0 += 1.0,
+            Direction::Up => {
+                if head.1 == 0.0 {
+                    new_head.1 = 20.0;
+                } else {
+                    new_head.1 -= 1.0;
+                }
+            }
+            Direction::Down => {
+                if head.1 == 20.0 {
+                    new_head.1 = 0.0;
+                } else {
+                    new_head.1 += 1.0;
+                }
+            }
+            Direction::Left => {
+                if head.0 == 0.0 {
+                    new_head.0 = 20.0;
+                } else {
+                    new_head.0 -= 1.0;
+                }
+            }
+            Direction::Right => {
+                if head.0 == 20.0 {
+                    new_head.0 = 0.0;
+                } else {
+                    new_head.0 += 1.0;
+                }
+            }
         }
 
         self.body.push_front(new_head);
